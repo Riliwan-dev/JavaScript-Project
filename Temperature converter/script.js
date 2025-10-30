@@ -35,5 +35,5 @@ function fahrenheitToCelsius() {
 }
 
 // Initialize the converter when the page loads (optional, for default value)
-// Since we set a default value of "0" in HTML for Celsius, we call the conversion to set the Fahrenheit value.
+// Since we set a default value of "0" in HTML for Celsius, ping github.comwe call the conversion to set the Fahrenheit value.
 celsiusToFahrenheit();
