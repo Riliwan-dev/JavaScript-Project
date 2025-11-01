@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Recipe App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🍽️ Recipe Finder</h1>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search for a recipe..." />
+      <button id="searchBtn">Search</button>
+      <button id="favoritesBtn">❤️ Favorites</button>
+      <button id="darkModeToggle">🌙</button>
+    </div>
+  </header>
+
+  <main id="recipeContainer" class="recipe-container">
+    <p class="placeholder">Type a recipe name and click search 👆</p>
+  </main>
+
+  <!-- FAVORITES MODAL -->
+  <div id="favoritesModal" class="favorites-modal">
+    <div class="favorites-content">
+      <div class="favorites-header">
+        <h2>Your Favorite Recipes ❤️</h2>
+        <button id="closeFavorites">✖</button>
+      </div>
+      <div id="favoritesList" class="favorites-list"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Made with ❤️ by Riliwan</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

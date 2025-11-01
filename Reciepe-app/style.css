@@ -1,0 +1,120 @@
+/* (Keep all previous styles) */
+
+/* Modal Overlay */
+.favorites-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+/* Modal Content */
+.favorites-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80%;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Favorites Header */
+.favorites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.favorites-header h2 {
+  color: #ff7b54;
+}
+
+.favorites-header button {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #ff7b54;
+  cursor: pointer;
+}
+
+/* Favorites List */
+.favorites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.favorite-card {
+  background: #fff7f3;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.favorite-card:hover {
+  transform: translateY(-5px);
+}
+
+.favorite-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.favorite-info {
+  padding: 0.8rem;
+}
+
+.favorite-info h4 {
+  color: #ff7b54;
+  margin-bottom: 0.3rem;
+}
+
+.favorite-info button {
+  background: #ff7b54;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.favorite-info button:hover {
+  background: #ff956b;
+}
+
+/* Dark Mode Modal */
+body.dark .favorites-content {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+body.dark .favorite-card {
+  background: #333;
+}
