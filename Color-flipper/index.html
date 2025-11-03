@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modern Color Flipper</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.04);
+      --accent: #8b5cf6;
+      --radius: 14px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:var(--bg);}
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      box-sizing:border-box;
+      transition:background var(--transition);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+
+    .card{
+      width:min(980px,calc(100% - 40px));
+      border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      padding:24px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      align-items:start;
+      backdrop-filter: blur(6px) saturate(120%);
+    }
+
+    .panel{
+      background:var(--card);
+      border-radius:12px;
+      padding:18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      transition:transform var(--transition), box-shadow var(--transition);
+    }
+
+    .panel:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.6)}
+
+    h1{margin:0 0 8px 0;font-size:20px;letter-spacing:-0.2px}
+    p.lead{margin:0 0 14px 0;color:rgba(255,255,255,0.72);font-size:13px}
+
+    /* big preview */
+    .preview{
+      height:320px;
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgb(255,255,255);
+      text-shadow: 0 4px 18px rgba(0,0,0,0.5);
+      transition:background 500ms linear, color 300ms linear;
+      position:relative;
+    }
+
+    .preview .meta{
+      position:absolute;left:20px;top:18px;background:var(--glass);padding:8px 10px;border-radius:10px;font-weight:600;font-size:13px;
+      backdrop-filter: blur(6px);
+    }
+
+    .preview .large{
+      font-size:42px;font-weight:700;letter-spacing:0.6px;
+    }
+
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.08);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;transition:all var(--transition);backdrop-filter: blur(6px);
+    }
+    .btn:hover{transform:translateY(-4px)}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#7c3aed);border:0;color:white}
+    .small{font-size:13px;padding:7px 10px}
+
+    .right-col{display:flex;flex-direction:column;gap:12px}
+    label{font-size:13px;color:rgba(255,255,255,0.84);display:block;margin-bottom:6px}
+
+    .swatches{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:6px
+    }
+    .swatch{width:44px;height:44px;border-radius:8px;cursor:pointer;border:2px solid rgba(255,255,255,0.04);box-shadow:0 6px 18px rgba(0,0,0,0.35);transition:transform var(--transition)}
+    .swatch:hover{transform:translateY(-6px)}
+
+    .format-select{display:flex;gap:8px}
+    .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.06);font-weight:700;cursor:pointer}
+    .chip.active{background:rgba(255,255,255,0.03);box-shadow:0 6px 16px rgba(2,6,23,0.5)}
+
+    .info{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;background:rgba(0,0,0,0.15);padding:8px 12px;border-radius:8px}
+
+    .footer{font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px}
+
+    /* responsive */
+    @media (max-width:880px){
+      .card{grid-template-columns:1fr;}
+      .preview{height:260px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="card" role="application" aria-label="Color flipper app">
+
+      <div class="panel">
+        <h1>Modern Color Flipper</h1>
+        <p class="lead">Generate beautiful colors, copy CSS values, pick from palettes, or save favorites. Press <strong>Space</strong> to generate.
+        </p>
+
+        <div class="preview" id="preview" aria-live="polite">
+          <div class="meta" id="meta">HEX • RGB • HSL</div>
+          <div class="large" id="display">#1A73E8</div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="generate">Generate Color</button>
+          <button class="btn" id="copy">Copy</button>
+          <button class="btn" id="toggleGradient">Toggle Gradient</button>
+          <button class="btn" id="save">Save Favorite</button>
+          <button class="btn small" id="randomFromPalette">From Palette</button>
+        </div>
+
+        <div class="footer">Tip: Click a swatch on the right to apply it. Favorites persist in your browser.</div>
+      </div>
+
+      <div class="right-col">
+        <div class="panel">
+          <label>Color formats</label>
+          <div class="format-select" role="tablist" aria-label="Color format">
+            <div class="chip active" data-format="hex">HEX</div>
+            <div class="chip" data-format="rgb">RGB</div>
+            <div class="chip" data-format="hsl">HSL</div>
+          </div>
+
+          <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+          <label>Preset palettes</label>
+          <div class="swatches" id="palettes"></div>
+
+          <hr style="margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)" />
+
+          <label>Favorites</label>
+          <div class="swatches" id="favorites"></div>
+
+        </div>
+
+        <div class="panel info">
+          <div>
+            <label>Current value</label>
+            <div class="code" id="currentValue">#1A73E8</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <label>Actions</label>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button class="btn" id="clearFav">Clear</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Utility helpers
+    const qs = sel => document.querySelector(sel);
+    const qsa = sel => Array.from(document.querySelectorAll(sel));
+
+    // DOM
+    const preview = qs('#preview');
+    const display = qs('#display');
+    const meta = qs('#meta');
+    const generateBtn = qs('#generate');
+    const copyBtn = qs('#copy');
+    const toggleGradientBtn = qs('#toggleGradient');
+    const saveBtn = qs('#save');
+    const palettesWrap = qs('#palettes');
+    const favoritesWrap = qs('#favorites');
+    const currentValue = qs('#currentValue');
+    const formatChips = qsa('.chip');
+    const randomFromPalette = qs('#randomFromPalette');
+    const clearFav = qs('#clearFav');
+
+    // State
+    let state = {
+      color: '#1A73E8',
+      gradient: false,
+      format: 'hex',
+      palettes: [
+        ['#111827','#0f172a','#0ea5a4','#06b6d4','#60a5fa'],
+        ['#081b2e','#0f1724','#2563eb','#7c3aed','#ef4444'],
+        ['#f97316','#fb923c','#f59e0b','#84cc16','#10b981']
+      ],
+      favorites: JSON.parse(localStorage.getItem('color_favs') || '[]')
+    };
+
+    function applyColor(col){
+      state.color = col.toUpperCase();
+      const rgb = hexToRgb(state.color);
+      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+      const textColor = getContrastYIQ(rgb.r, rgb.g, rgb.b) ? '#0b1220' : '#FFFFFF';
+
+      if(state.gradient){
+        preview.style.background = `linear-gradient(135deg, ${state.color}, rgba(255,255,255,0.08))`;
+      } else {
+        preview.style.background = state.color;
+      }
+
+      preview.style.color = textColor;
+      display.textContent = formatValue(state.color, rgb, hsl);
+      meta.textContent = `${state.color} • rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) • hsl(${Math.round(hsl.h)} ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`;
+      currentValue.textContent = formatValue(state.color, rgb, hsl);
+    }
+
+    function formatValue(hex, rgb, hsl){
+      if(state.format === 'hex') return hex;
+      if(state.format === 'rgb') return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      if(state.format === 'hsl') return `hsl(${Math.round(hsl.h)} ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`;
+      return hex;
+    }
+
+    function generateHex(){
+      const r = Math.floor(Math.random()*256);
+      const g = Math.floor(Math.random()*256);
+      const b = Math.floor(Math.random()*256);
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+
+    function toHex(n){
+      const s = n.toString(16).toUpperCase();
+      return s.length===1? '0'+s : s;
+    }
+
+    function hexToRgb(hex){
+      const h = hex.replace('#','');
+      const bigint = parseInt(h,16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return {r,g,b};
+    }
+
+    function rgbToHsl(r,g,b){
+      r/=255;g/=255;b/=255;
+      const max=Math.max(r,g,b), min=Math.min(r,g,b);
+      let h=0,s=0,l=(max+min)/2;
+      if(max!==min){
+        const d=max-min;
+        s = l>0.5? d/(2-max-min) : d/(max+min);
+        switch(max){
+          case r: h=(g-b)/d + (g<b?6:0); break;
+          case g: h=(b-r)/d + 2; break;
+          case b: h=(r-g)/d + 4; break;
+        }
+        h*=60;
+      }
+      return {h,s: s*100,l: l*100};
+    }
+
+    function getContrastYIQ(r,g,b){
+      // return true for dark text, false for light text
+      const yiq = (r*299 + g*587 + b*114)/1000;
+      return yiq > 150; // if bright background, use dark text
+    }
+
+    function copyToClipboard(text){
+      if(navigator.clipboard){
+        return navigator.clipboard.writeText(text);
+      }
+      const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      return Promise.resolve();
+    }
+
+    // UI wiring
+    generateBtn.addEventListener('click', ()=> applyColor(generateHex()));
+
+    copyBtn.addEventListener('click', ()=>{
+      copyToClipboard(currentValue.textContent).then(()=>{
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=>copyBtn.textContent='Copy',900);
+      });
+    });
+
+    toggleGradientBtn.addEventListener('click', ()=>{
+      state.gradient = !state.gradient;
+      toggleGradientBtn.textContent = state.gradient ? 'Gradient: On' : 'Toggle Gradient';
+      applyColor(state.color);
+    });
+
+    // format chips
+    formatChips.forEach(chip => {
+      chip.addEventListener('click', ()=>{
+        formatChips.forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        state.format = chip.getAttribute('data-format');
+        applyColor(state.color);
+      });
+    });
+
+    // palettes
+    function renderPalettes(){
+      palettesWrap.innerHTML = '';
+      state.palettes.forEach(p => {
+        p.forEach(col => {
+          const el = document.createElement('button');
+          el.className='swatch';
+          el.style.background = col;
+          el.title = col;
+          el.setAttribute('aria-label', 'Apply color '+col);
+          el.addEventListener('click', ()=> applyColor(col));
+          palettesWrap.appendChild(el);
+        })
+      })
+    }
+
+    // favorites
+    function renderFavorites(){
+      favoritesWrap.innerHTML='';
+      state.favorites.forEach(col=>{
+        const el = document.createElement('button');
+        el.className='swatch';
+        el.style.background = col;
+        el.title = col;
+        el.addEventListener('click', ()=> applyColor(col));
+        favoritesWrap.appendChild(el);
+      });
+    }
+
+    saveBtn.addEventListener('click', ()=>{
+      if(!state.favorites.includes(state.color)){
+        state.favorites.unshift(state.color);
+        if(state.favorites.length>12) state.favorites.pop();
+        localStorage.setItem('color_favs', JSON.stringify(state.favorites));
+        renderFavorites();
+      }
+      saveBtn.textContent='Saved';
+      setTimeout(()=>saveBtn.textContent='Save Favorite',900);
+    });
+
+    clearFav.addEventListener('click', ()=>{
+      state.favorites=[];localStorage.removeItem('color_favs');renderFavorites();
+    });
+
+    randomFromPalette.addEventListener('click', ()=>{
+      const flat = state.palettes.flat();
+      const pick = flat[Math.floor(Math.random()*flat.length)];
+      applyColor(pick);
+    });
+
+    // keyboard: space to generate
+    window.addEventListener('keydown', (e)=>{
+      if(e.code === 'Space' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+        e.preventDefault();
+        applyColor(generateHex());
+      }
+    });
+
+    // small helpers done
+    function init(){
+      renderPalettes();
+      renderFavorites();
+      applyColor(state.color);
+    }
+
+    init();
+  </script>
+</body>
+</html>

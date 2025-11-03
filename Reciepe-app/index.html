@@ -1,41 +1,360 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Recipe App</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Recipe Finder</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#ff6b6b;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      --radius:14px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #071026 0%, #071b2a 100%);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      padding:28px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .app{
+      width:100%;
+      max-width:1100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px;
+      padding:22px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    header{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .brand{
+      display:flex;gap:12px;align-items:center
+    }
+    .logo{
+      width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffd166);display:grid;place-items:center;color:#021024;font-weight:700;font-size:20px
+    }
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:12px;align-items:center}
+    .search{
+      background:var(--glass);
+      border-radius:12px;padding:8px 12px;display:flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,0.02);
+    }
+    .search input{background:transparent;border:0;outline:0;color:inherit;font-size:14px;width:260px}
+    .select{background:var(--glass-2);border-radius:10px;padding:8px;border:1px solid rgba(255,255,255,0.02)}
+    .btn{background:linear-gradient(90deg,var(--accent),#ff9a9e);border:0;padding:8px 12px;border-radius:10px;color:#021024;font-weight:700;cursor:pointer}
+
+    main{display:grid;grid-template-columns:1fr 340px;gap:18px}
+
+    /* results */
+    .results{background:transparent;padding:8px 4px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--gap)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px)}
+    .card img{width:100%;height:150px;object-fit:cover;border-radius:8px}
+    .card h3{margin:8px 0 6px 0;font-size:16px}
+    .meta{display:flex;gap:8px;font-size:12px;color:var(--muted);align-items:center}
+    .card .actions{display:flex;gap:8px;margin-top:10px}
+    .pill{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:999px;font-size:12px}
+
+    /* sidebar */
+    aside{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);min-height:200px}
+    .sidebar h4{margin:6px 0;color:#cfe7ff}
+    .filters{display:flex;flex-direction:column;gap:8px}
+    .fav-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .fav-item{display:flex;gap:8px;align-items:center}
+    .fav-item img{width:48px;height:48px;border-radius:8px;object-fit:cover}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{background:linear-gradient(180deg,#071229,#071b2a);max-width:920px;width:100%;border-radius:12px;padding:18px;color:#eaf6ff}
+    .modal .content{display:grid;grid-template-columns:320px 1fr;gap:14px}
+    .close{background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:18px}
+
+    /* empty */
+    .empty{padding:40px;border-radius:10px;text-align:center;color:var(--muted);background:transparent}
+
+    @media (max-width:900px){main{grid-template-columns:1fr}.controls{flex-direction:column;align-items:flex-start}.search input{width:100%}.brand h1{font-size:18px}}
+
+  </style>
 </head>
 <body>
-  <header>
-    <h1>🍽️ Recipe Finder</h1>
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search for a recipe..." />
-      <button id="searchBtn">Search</button>
-      <button id="favoritesBtn">❤️ Favorites</button>
-      <button id="darkModeToggle">🌙</button>
-    </div>
-  </header>
-
-  <main id="recipeContainer" class="recipe-container">
-    <p class="placeholder">Type a recipe name and click search 👆</p>
-  </main>
-
-  <!-- FAVORITES MODAL -->
-  <div id="favoritesModal" class="favorites-modal">
-    <div class="favorites-content">
-      <div class="favorites-header">
-        <h2>Your Favorite Recipes ❤️</h2>
-        <button id="closeFavorites">✖</button>
+  <div class="app" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo">RF</div>
+        <div>
+          <h1>Recipe Finder</h1>
+          <p class="lead">Search, filter and save tasty recipes.</p>
+        </div>
       </div>
-      <div id="favoritesList" class="favorites-list"></div>
+
+      <div class="controls">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="q" placeholder="Search recipes (e.g. chicken, pasta)" />
+          <button class="btn" id="searchBtn">Search</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="results">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <h3 style="margin:0">Results</h3>
+          <div class="meta"><span id="count">0</span> recipes</div>
+        </div>
+
+        <div id="grid" class="grid"></div>
+        <div id="empty" class="empty" style="display:none">No recipes found — try another search or press "Random".</div>
+      </section>
+
+      <aside>
+        <div class="sidebar">
+          <h4>Quick Actions</h4>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button class="btn" id="randomBtn">Random Recipe</button>
+            <button class="select" id="clearFav">Clear Favorites</button>
+          </div>
+
+          <h4 style="margin-top:6px">Filters</h4>
+          <div class="filters">
+            <select id="area" class="select">
+              <option value="">All Areas</option>
+            </select>
+            <select id="category" class="select">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+
+          <h4 style="margin-top:12px">Favorites</h4>
+          <div id="favList" class="fav-list">
+            <div class="fav-empty" style="color:var(--muted)">No favorites yet — click the ❤ on a recipe to save it.</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 id="modalTitle">Recipe</h3>
+        <div>
+          <button class="close" id="copyBtn">Copy</button>
+          <button class="close" id="closeModal">✕</button>
+        </div>
+      </div>
+      <div class="content">
+        <div>
+          <img id="modalImg" src="" alt="" style="width:100%;border-radius:8px;margin-bottom:8px;object-fit:cover;height:260px"/>
+          <div class="meta" id="modalMeta"></div>
+        </div>
+        <div style="max-height:60vh;overflow:auto;padding-right:8px">
+          <h4>Ingredients</h4>
+          <ul id="ingredients"></ul>
+          <h4>Instructions</h4>
+          <p id="instructions"></p>
+          <div id="videoWrap"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <footer>
-    <p>Made with ❤️ by Riliwan</p>
-  </footer>
+  <script>
+    // Modern Recipe Finder - Vanilla JS
+    const API_BASE = 'https://www.themealdb.com/api/json/v1/1';
 
-  <script src="script.js"></script>
+    const qEl = document.getElementById('q');
+    const grid = document.getElementById('grid');
+    const count = document.getElementById('count');
+    const empty = document.getElementById('empty');
+    const favListEl = document.getElementById('favList');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImg = document.getElementById('modalImg');
+    const modalMeta = document.getElementById('modalMeta');
+    const ingredientsEl = document.getElementById('ingredients');
+    const instructionsEl = document.getElementById('instructions');
+    const videoWrap = document.getElementById('videoWrap');
+
+    const searchBtn = document.getElementById('searchBtn');
+    const randomBtn = document.getElementById('randomBtn');
+    const closeModal = document.getElementById('closeModal');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearFav = document.getElementById('clearFav');
+
+    const areaSelect = document.getElementById('area');
+    const catSelect = document.getElementById('category');
+
+    let recipes = [];
+    let favorites = JSON.parse(localStorage.getItem('rf:favorites') || '[]');
+
+    function showLoading(){ grid.innerHTML = '<div style="grid-column:1/-1;padding:20px">Loading...</div>' }
+
+    async function fetchJSON(url){
+      try{
+        const res = await fetch(url);
+        if(!res.ok) throw new Error('Network error');
+        return await res.json();
+      }catch(e){
+        console.warn('Fetch failed', e);
+        return null;
+      }
+    }
+
+    async function loadFilters(){
+      const cats = await fetchJSON(API_BASE + '/list.php?c=list');
+      const areas = await fetchJSON(API_BASE + '/list.php?a=list');
+      if(cats && cats.meals){
+        catSelect.innerHTML = '<option value="">All Categories</option>' + cats.meals.map(c=>`<option value="${c.strCategory}">${c.strCategory}</option>`).join('');
+      }
+      if(areas && areas.meals){
+        areaSelect.innerHTML = '<option value="">All Areas</option>' + areas.meals.map(a=>`<option value="${a.strArea}">${a.strArea}</option>`).join('');
+      }
+    }
+
+    function renderGrid(items){
+      recipes = items || [];
+      grid.innerHTML = recipes.map(r=>recipeCardHtml(r)).join('') || '';
+      count.textContent = recipes.length;
+      empty.style.display = recipes.length ? 'none' : 'block';
+      attachCardListeners();
+    }
+
+    function recipeCardHtml(r){
+      const isFav = favorites.find(f=>f.idMeal===r.idMeal);
+      return `
+        <article class="card" data-id="${r.idMeal}">
+          <img src="${r.strMealThumb}" alt="${escapeHtml(r.strMeal)}">
+          <h3>${escapeHtml(r.strMeal)}</h3>
+          <div class="meta"><span class="pill">${r.strArea || '—'}</span><span class="pill">${r.strCategory || '—'}</span></div>
+          <div class="actions">
+            <button class="select viewBtn">View</button>
+            <button class="select favBtn" data-id="${r.idMeal}" aria-pressed="${!!isFav}">${isFav? '❤ Saved' : '♡ Save'}</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function attachCardListeners(){
+      document.querySelectorAll('.viewBtn').forEach(b=>b.addEventListener('click', (e)=>{
+        const id = e.target.closest('.card').dataset.id; openRecipe(id);
+      }));
+      document.querySelectorAll('.favBtn').forEach(b=>b.addEventListener('click', (e)=>{
+        const id = e.dataset.id; toggleFav(id);
+      }));
+    }
+
+    function escapeHtml(s){ return String(s).replaceAll('<','&lt;').replaceAll('>','&gt;') }
+
+    async function search(q){
+      if(!q) return;
+      showLoading();
+      const data = await fetchJSON(API_BASE + '/search.php?s=' + encodeURIComponent(q));
+      if(data && data.meals){
+        renderGrid(data.meals);
+      }else{
+        renderGrid([]);
+      }
+    }
+
+    async function randomRecipe(){
+      showLoading();
+      const data = await fetchJSON(API_BASE + '/random.php');
+      if(data && data.meals){ renderGrid(data.meals); }
+    }
+
+    async function openRecipe(id){
+      const item = recipes.find(r=>r.idMeal===id) || (await fetchJSON(API_BASE + '/lookup.php?i=' + id))?.meals?.[0];
+      if(!item) return alert('Recipe not found');
+      modalTitle.textContent = item.strMeal;
+      modalImg.src = item.strMealThumb;
+      modalMeta.innerHTML = `<span class="pill">${item.strArea || '—'}</span> <span class="pill">${item.strCategory||'—'}</span>`;
+      ingredientsEl.innerHTML = '';
+      for(let i=1;i<=20;i++){
+        const ing = item['strIngredient'+i];
+        const amt = item['strMeasure'+i];
+        if(ing && ing.trim()){
+          const li = document.createElement('li'); li.textContent = `${ing} — ${amt||''}`; ingredientsEl.appendChild(li);
+        }
+      }
+      instructionsEl.textContent = item.strInstructions || '';
+      videoWrap.innerHTML = '';
+      if(item.strYoutube){
+        const idy = item.strYoutube.split('v=')[1] || '';
+        const iframe = document.createElement('iframe');
+        iframe.width = '100%'; iframe.height = '300'; iframe.src = `https://www.youtube.com/embed/${idy}`; iframe.frameBorder=0; iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        videoWrap.appendChild(iframe);
+      }
+      modalBackdrop.style.display = 'flex';
+    }
+
+    function closeRecipe(){ modalBackdrop.style.display = 'none'; }
+
+    function toggleFav(id){
+      const item = recipes.find(r=>r.idMeal===id);
+      if(!item) return;
+      const idx = favorites.findIndex(f=>f.idMeal===id);
+      if(idx>-1){ favorites.splice(idx,1); } else { favorites.push({idMeal:item.idMeal,strMeal:item.strMeal,strMealThumb:item.strMealThumb}); }
+      localStorage.setItem('rf:favorites', JSON.stringify(favorites));
+      refreshFavs();
+      renderGrid(recipes);
+    }
+
+    function refreshFavs(){
+      if(!favorites.length){ favListEl.innerHTML = '<div class="fav-empty" style="color:var(--muted)">No favorites yet — click the ❤ on a recipe to save it.</div>'; return }
+      favListEl.innerHTML = favorites.map(f=>`<div class="fav-item" data-id="${f.idMeal}"><img src="${f.strMealThumb}" alt=""><div style="flex:1"><strong style="display:block">${f.strMeal}</strong><button class="select openFav" data-id="${f.idMeal}">Open</button></div></div>`).join('');
+      document.querySelectorAll('.openFav').forEach(b=>b.addEventListener('click', async (e)=>{
+        const id = e.dataset.id;
+        const data = await fetchJSON(API_BASE + '/lookup.php?i=' + id);
+        if(data && data.meals) openRecipe(id);
+      }));
+    }
+
+    // copy recipe details
+    copyBtn.addEventListener('click', ()=>{
+      const text = modalTitle.textContent + "\n\nIngredients:\n" + Array.from(ingredientsEl.querySelectorAll('li')).map(li=>li.textContent).join('\n') + "\n\n" + instructionsEl.textContent;
+      navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard'));
+    });
+
+    closeModal.addEventListener('click', closeRecipe);
+    modalBackdrop.addEventListener('click', (e)=>{ if(e.target===modalBackdrop) closeRecipe(); });
+
+    searchBtn.addEventListener('click', ()=>{ const q = qEl.value.trim(); if(!q) return alert('Type a search term'); search(q); });
+    qEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ searchBtn.click(); } });
+    randomBtn.addEventListener('click', randomRecipe);
+    clearFav.addEventListener('click', ()=>{ if(confirm('Clear all favorites?')){ favorites=[]; localStorage.removeItem('rf:favorites'); refreshFavs(); renderGrid(recipes); } });
+
+    // on load
+    (async function init(){
+      await loadFilters();
+      refreshFavs();
+      // initial random recipes
+      const data = await fetchJSON(API_BASE + '/search.php?s=');
+      if(data && data.meals) renderGrid(data.meals.slice(0,12));
+    })();
+
+    // helper: keep friendlier UI even if API blocked - fallback sample
+    // (not used unless network fails)
+  </script>
 </body>
 </html>
