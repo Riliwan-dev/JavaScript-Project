@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modern Dice Roller</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7c5cff;
+      --accent-2:#00d4ff;
+      --glass: rgba(255,255,255,0.04);
+      --muted: #9aa4b2;
+      --glass-2: rgba(124,92,255,0.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 400px at 10% 10%, rgba(124,92,255,0.12), transparent 8%),
+                  radial-gradient(900px 300px at 90% 90%, rgba(0,212,255,0.06), transparent 10%),
+                  var(--bg);
+      color:#e6eef6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .app{
+      width:100%;
+      max-width:980px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap:20px;
+      align-items:start;
+    }
+
+    header{
+      grid-column:1/-1;
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:6px;
+    }
+    header h1{font-size:20px;margin:0}
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    .left{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .card{
+      background: linear-gradient(180deg,var(--card), rgba(255,255,255,0.02));
+      border-radius:12px;
+      padding:16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .select, .btn, .btn-ghost{
+      border:0;outline:0;font-size:14px;padding:10px 14px;border-radius:10px;
+    }
+    .select{background:var(--glass);color:var(--muted)}
+    .btn{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;font-weight:600;cursor:pointer;box-shadow: 0 6px 18px rgba(124,92,255,0.14);
+    }
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);cursor:pointer}
+
+    .die-area{
+      display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+    }
+
+    /* Single die styling */
+    .die{
+      width:120px;height:120px;border-radius:16px;background:linear-gradient(180deg,#0b1630 0%, #071023 100%);
+      display:grid;place-items:center;padding:12px;position:relative;overflow:visible;
+      perspective:900px;
+      transition: transform 600ms cubic-bezier(.2,.9,.3,1);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.7), 0 6px 10px rgba(124,92,255,0.06) inset;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .die.roll{
+      animation: pop 520ms ease; /* small pop on roll */
+    }
+    @keyframes pop{0%{transform:translateY(0)}50%{transform:translateY(-6px) rotate(10deg)}100%{transform:none}}
+
+    .pip-grid{
+      width:86px;height:86px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:8px;
+    }
+    .pip{
+      width:18px;height:18px;border-radius:50%;background:linear-gradient(180deg,#fff,#dbe9ff);box-shadow:0 3px 6px rgba(0,0,0,0.4);
+      display:none;transform:scale(0.95);
+    }
+    .pip.show{display:block}
+
+    /* faces by number - show appropriate pips */
+    .die[data-face="1"] .pip{display:none}
+    .die[data-face="1"] .pip.center{display:block}
+    .die[data-face="2"] .pip{display:none}
+    .die[data-face="2"] .pip.tl, .die[data-face="2"] .pip.br{display:block}
+    .die[data-face="3"] .pip{display:none}
+    .die[data-face="3"] .pip.tl, .die[data-face="3"] .pip.center, .die[data-face="3"] .pip.br{display:block}
+    .die[data-face="4"] .pip{display:none}
+    .die[data-face="4"] .pip.tl, .die[data-face="4"] .pip.tr, .die[data-face="4"] .pip.bl, .die[data-face="4"] .pip.br{display:block}
+    .die[data-face="5"] .pip{display:none}
+    .die[data-face="5"] .pip.tl, .die[data-face="5"] .pip.tr, .die[data-face="5"] .pip.center, .die[data-face="5"] .pip.bl, .die[data-face="5"] .pip.br{display:block}
+    .die[data-face="6"] .pip{display:none}
+    .die[data-face="6"] .pip.tl, .die[data-face="6"] .pip.ml, .die[data-face="6"] .pip.bl, .die[data-face="6"] .pip.tr, .die[data-face="6"] .pip.mr, .die[data-face="6"] .pip.br{display:block}
+
+    .die .label{
+      position:absolute;left:10px;top:8px;font-size:11px;color:var(--muted);opacity:0.8
+    }
+
+    /* Right column */
+    .right{display:flex;flex-direction:column;gap:12px}
+    .history{max-height:340px;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+    .history .entry{font-size:14px;padding:8px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);display:flex;justify-content:space-between}
+    .stats{display:flex;gap:12px;align-items:center}
+    .stat{flex:1;padding:12px;border-radius:10px;background:var(--glass-2);text-align:center}
+    .muted{color:var(--muted);font-size:13px}
+
+    footer{grid-column:1/-1;text-align:right;color:var(--muted);font-size:12px}
+
+    /* responsive */
+    @media (max-width:900px){
+      .app{grid-template-columns:1fr;}
+      .right{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-labelledby="title">
+    <header>
+      <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:700;">D6</div>
+      <div>
+        <h1 id="title">Modern Dice Roller</h1>
+        <p>Roll slick-looking dice with animation, history and stats — keyboard: <strong>Space</strong>.</p>
+      </div>
+    </header>
+
+    <main class="left">
+      <section class="card controls" aria-label="controls">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <label class="muted"># of dice</label>
+          <select id="diceCount" class="select" aria-label="Number of dice">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+
+          <label class="muted">Sides</label>
+          <select id="sides" class="select" aria-label="Sides per die">
+            <option value="6">6 (D6)</option>
+            <option value="4">4 (D4)</option>
+            <option value="8">8 (D8)</option>
+            <option value="10">10 (D10)</option>
+            <option value="12">12 (D12)</option>
+            <option value="20">20 (D20)</option>
+          </select>
+
+          <button id="rollBtn" class="btn">Roll</button>
+          <button id="clearBtn" class="btn-ghost">Clear History</button>
+        </div>
+        <div style="margin-top:12px;color:var(--muted);font-size:13px">Tip: press <strong>Space</strong> to roll. Use sides for different tabletop dice.</div>
+      </section>
+
+      <section class="card die-area" aria-live="polite" aria-atomic="true" id="diceContainer">
+        <!-- dice inserted here -->
+      </section>
+
+    </main>
+
+    <aside class="right">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>Roll History</strong>
+          <span class="muted" id="historyCount">0</span>
+        </div>
+        <div class="history" id="historyList" aria-label="Roll history"></div>
+      </div>
+
+      <div class="card stats">
+        <div class="stat">
+          <div class="muted">Last Total</div>
+          <div id="lastTotal" style="font-size:20px;font-weight:700">—</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Rolls</div>
+          <div id="rollsCount" style="font-size:20px;font-weight:700">0</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <footer>Made with ✨ — accessible and keyboard friendly</footer>
+  </div>
+
+  <script>
+    // Modern Dice Roller JS
+    const diceContainer = document.getElementById('diceContainer');
+    const rollBtn = document.getElementById('rollBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const diceCountEl = document.getElementById('diceCount');
+    const sidesEl = document.getElementById('sides');
+    const historyList = document.getElementById('historyList');
+    const historyCount = document.getElementById('historyCount');
+    const lastTotal = document.getElementById('lastTotal');
+    const rollsCount = document.getElementById('rollsCount');
+
+    let rolls = 0;
+    let history = [];
+
+    function createDieElement(index, sides){
+      const die = document.createElement('div');
+      die.className = 'die card';
+      die.setAttribute('role','img');
+      die.setAttribute('aria-label', 'die');
+      die.dataset.face = '1';
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = `#${index+1}`;
+      die.appendChild(label);
+
+      // For D6 we show pips grid. For other sided dice show numeric label large.
+      if(Number(sides) === 6){
+        const grid = document.createElement('div');
+        grid.className = 'pip-grid';
+        const positions = ['tl','ml','bl','center','mr','tr','br'];
+        // create 9 spots (3x3), but name specific ones for styling
+        for(let r=0;r<3;r++){
+          for(let c=0;c<3;c++){
+            const spot = document.createElement('div');
+            spot.className = 'pip';
+            // assign classes for known positions
+            if(r===0&&c===0) spot.classList.add('tl');
+            if(r===0&&c===1) spot.classList.add('ml');
+            if(r===0&&c===2) spot.classList.add('tr');
+            if(r===1&&c===0) spot.classList.add('ml');
+            if(r===1&&c===1) spot.classList.add('center');
+            if(r===1&&c===2) spot.classList.add('mr');
+            if(r===2&&c===0) spot.classList.add('bl');
+            if(r===2&&c===1) spot.classList.add('ml');
+            if(r===2&&c===2) spot.classList.add('br');
+            grid.appendChild(spot);
+          }
+        }
+        die.appendChild(grid);
+      } else {
+        const big = document.createElement('div');
+        big.style.fontSize = '46px';
+        big.style.fontWeight = '800';
+        big.style.letterSpacing = '1px';
+        big.textContent = '1';
+        big.className = 'biglabel';
+        die.appendChild(big);
+      }
+
+      return die;
+    }
+
+    function buildDice(){
+      diceContainer.innerHTML = '';
+      const count = Number(diceCountEl.value);
+      const sides = Number(sidesEl.value);
+      for(let i=0;i<count;i++){
+        diceContainer.appendChild(createDieElement(i,sides));
+      }
+    }
+
+    function rollOnce(){
+      const sides = Number(sidesEl.value);
+      return Math.floor(Math.random()*sides) + 1;
+    }
+
+    function animateDie(die, value, sides){
+      // add roll class for small pop
+      die.classList.add('roll');
+      setTimeout(()=>die.classList.remove('roll'),600);
+
+      if(Number(sides) === 6){
+        die.dataset.face = String(value);
+      } else {
+        const big = die.querySelector('.biglabel');
+        if(big) big.textContent = value;
+      }
+
+      // tiny transform to feel more 'random'
+      const rx = (Math.random()-0.5)*25;
+      const ry = (Math.random()-0.5)*25;
+      die.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }
+
+    function rollDice(){
+      const dice = Array.from(diceContainer.children);
+      if(dice.length===0) buildDice();
+      const sides = Number(sidesEl.value);
+      const results = [];
+
+      // visual stagger
+      dice.forEach((d, idx)=>{
+        setTimeout(()=>{
+          const v = rollOnce();
+          results.push(v);
+          animateDie(d, v, sides);
+
+          // when finished last, record history
+          if(idx === dice.length-1){
+            const total = results.reduce((a,b)=>a+b,0);
+            rolls++;
+            rollsCount.textContent = String(rolls);
+            lastTotal.textContent = String(total);
+            addHistory({results, total, sides});
+          }
+        }, idx*90);
+      });
+    }
+
+    function addHistory(entry){
+      history.unshift(entry);
+      // cap history length
+      if(history.length>50) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory(){
+      historyList.innerHTML = '';
+      history.forEach((h,i)=>{
+        const el = document.createElement('div');
+        el.className = 'entry';
+        const left = document.createElement('div');
+        left.textContent = `${h.results.join(' + ')}  (D${h.sides})`;
+        const right = document.createElement('div');
+        right.textContent = h.total;
+        el.appendChild(left);
+        el.appendChild(right);
+        historyList.appendChild(el);
+      });
+      historyCount.textContent = String(history.length);
+    }
+
+    // events
+    rollBtn.addEventListener('click', ()=>{
+      buildDice();
+      rollDice();
+    });
+    clearBtn.addEventListener('click', ()=>{
+      history = [];
+      renderHistory();
+      lastTotal.textContent = '—';
+      rolls = 0;
+      rollsCount.textContent = '0';
+    });
+
+    // build initial die
+    buildDice();
+
+    // keyboard support (Space to roll)
+    window.addEventListener('keydown', (e)=>{
+      if(e.code === 'Space'){
+        e.preventDefault();
+        rollBtn.click();
+      }
+    });
+
+    // when changing count or sides, update dice visuals
+    diceCountEl.addEventListener('change', buildDice);
+    sidesEl.addEventListener('change', buildDice);
+
+    // accessibility: announce last roll (live region)
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live','polite');
+    liveRegion.style.position='absolute';
+    liveRegion.style.left='-9999px';
+    document.body.appendChild(liveRegion);
+
+    // update live region when history changes
+    const originalAddHistory = addHistory;
+    addHistory = function(entry){
+      originalAddHistory(entry);
+      liveRegion.textContent = `Rolled ${entry.results.join(', ')}. Total ${entry.total}.`;
+    };
+
+  </script>
+</body>
+</html>
