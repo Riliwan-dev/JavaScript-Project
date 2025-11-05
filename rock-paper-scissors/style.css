@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  backdrop-filter: blur(8px);
+  transition: 0.3s;
+}
+
+.game-container:hover {
+  transform: scale(1.02);
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+}
+
+.score h3 {
+  margin-bottom: 0.3rem;
+}
+
+.score p {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffe66d;
+}
+
+.choices {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.choice {
+  font-size: 2.5rem;
+  background: #fff;
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.choice:hover {
+  background: #ffe66d;
+  transform: scale(1.2);
+}
+
+.result h2 {
+  font-size: 1.4rem;
+  transition: 0.3s ease;
+}
+
+.win {
+  color: #00ff88;
+}
+
+.lose {
+  color: #ff4f4f;
+}
+
+.draw {
+  color: #ffe66d;
+}
