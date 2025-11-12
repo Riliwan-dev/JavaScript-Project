@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image + Tabs Section</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f6b6d1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      background-color: #f6b6d1;
+      gap: 20px;
+      max-width: 900px;
+      padding: 20px;
+    }
+
+    .image-box img {
+      width: 350px;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .tab-box {
+      background-color: #fdebf3;
+      border-radius: 10px;
+      flex: 1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-header {
+      display: flex;
+    }
+
+    .tab-header button {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 15px;
+      letter-spacing: 1px;
+      transition: background 0.3s ease;
+    }
+
+    .tab-header button.active {
+      background-color: #b3c8f3;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      font-weight: 600;
+    }
+
+    .tab-content {
+      padding: 20px;
+      flex: 1;
+      background-color: #fdebf3;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .tab-content h3 {
+      margin-top: 0;
+    }
+
+    .tab-content p {
+      line-height: 1.6;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .image-box img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="image-box">
+      <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=750&q=80" alt="Landscape">
+    </div>
+
+    <div class="tab-box">
+      <div class="tab-header">
+        <button class="tab-btn active" onclick="showTab(0)">Step 1</button>
+        <button class="tab-btn" onclick="showTab(1)">Step 2</button>
+        <button class="tab-btn" onclick="showTab(2)">Step 3</button>
+      </div>
+
+      <div class="tab-content" id="tab-content">
+        <h3>Step 1</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum sint cumque quasi, amet impedit tempore necessitatibus iste. Ratione possimus perspiciatis sapiente, ex alias, ipsam sit beatae vel repellat aperiam corrupti porro at molestiae itaque recusandae vitae atque!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const contents = [
+      {
+        title: "Step 1",
+        text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum sint cumque quasi, amet impedit tempore necessitatibus iste. Ratione possimus perspiciatis sapiente, ex alias, ipsam sit beatae vel repellat aperiam corrupti porro at molestiae itaque recusandae vitae atque!"
+      },
+      {
+        title: "Step 2",
+        text: "This is the second step description. Voluptatibus, temporibus. Quasi, veniam cupiditate. Dicta, aspernatur deserunt quas voluptate modi reiciendis officiis obcaecati rerum dolor pariatur."
+      },
+      {
+        title: "Step 3",
+        text: "This is the final step. Laborum dolorem impedit reprehenderit delectus exercitationem! Cumque consequatur soluta minima voluptate magni repellat mollitia deserunt nisi."
+      }
+    ];
+
+    function showTab(index) {
+      const buttons = document.querySelectorAll(".tab-btn");
+      const content = document.getElementById("tab-content");
+
+      buttons.forEach((btn, i) => {
+        btn.classList.toggle("active", i === index);
+      });
+
+      content.innerHTML = `
+        <h3>${contents[index].title}</h3>
+        <p>${contents[index].text}</p>
+      `;
+    }
+  </script>
+</body>
+</html>
