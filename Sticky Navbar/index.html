@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sticky Navbar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f9f9f9;
+      scroll-behavior: smooth;
+    }
+
+    /* NAVBAR STYLES */
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 50px;
+      z-index: 1000;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: #ffffffd9;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+      transition: color 0.3s ease, border-bottom 0.3s ease;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #0077ff;
+      border-bottom: 2px solid #0077ff;
+    }
+
+    /* HERO / CONTENT SECTIONS */
+    section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px;
+    }
+
+    #home {
+      background: linear-gradient(135deg, #f5a9b8, #fbc2eb);
+      color: #fff;
+    }
+
+    #about {
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      color: #fff;
+    }
+
+    #services {
+      background: linear-gradient(135deg, #fddb92, #d1fdff);
+      color: #333;
+    }
+
+    #contact {
+      background: linear-gradient(135deg, #c3cfe2, #f5f7fa);
+      color: #333;
+    }
+
+    section h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    section p {
+      max-width: 600px;
+      font-size: 1.1rem;
+    }
+
+    /* MOBILE MENU */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      height: 3px;
+      width: 25px;
+      background: #333;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 25px;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: white;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 0;
+        border-top: 1px solid #ddd;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="logo">Bello<span style="color:#0077ff;">Dev</span></div>
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="nav-links" id="nav-links">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- PAGE SECTIONS -->
+  <section id="home">
+    <h1>Welcome to BelloDev</h1>
+    <p>Clean and modern web experiences crafted with HTML, CSS, and JavaScript.</p>
+  </section>
+
+  <section id="about">
+    <h1>About Me</h1>
+    <p>I’m a passionate MERN stack developer focused on building user-friendly interfaces with strong functionality.</p>
+  </section>
+
+  <section id="services">
+    <h1>My Services</h1>
+    <p>From front-end designs to full-stack development, I create efficient digital products for real-world use.</p>
+  </section>
+
+  <section id="contact">
+    <h1>Contact</h1>
+    <p>Have a project in mind? Let’s build something great together!</p>
+  </section>
+
+  <script>
+    // Sticky Navbar Scroll Effect
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 50);
+    });
+
+    // Smooth Active Link Highlight
+    const links = document.querySelectorAll(".nav-links a");
+    window.addEventListener("scroll", () => {
+      let fromTop = window.scrollY + 100;
+      links.forEach(link => {
+        let section = document.querySelector(link.getAttribute("href"));
+        if (
+          section.offsetTop <= fromTop &&
+          section.offsetTop + section.offsetHeight > fromTop
+        ) {
+          links.forEach(l => l.classList.remove("active"));
+          link.classList.add("active");
+        }
+      });
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById("menu-toggle");
+    const navLinks = document.getElementById("nav-links");
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("show");
+    });
+  </script>
+</body>
+</html>
