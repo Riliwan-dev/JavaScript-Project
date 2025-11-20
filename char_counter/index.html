@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Real-time Character Counter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Real‑time Character Counter</h1>
+      <p class="tagline">Modern UI • Live counts • Progress ring • Copy & Clear</p>
+    </header>
+
+    <section class="card">
+      <div class="controls">
+        <label class="max-label">Max length:
+          <input id="maxLength" type="number" min="1" max="2000" value="280">
+        </label>
+
+        <div class="buttons">
+          <button id="clearBtn" class="btn subtle">Clear</button>
+          <button id="copyBtn" class="btn">Copy</button>
+        </div>
+      </div>
+
+      <div class="editor">
+        <textarea id="text" placeholder="Start typing… (supports emoji, multi‑byte, and newlines)"></textarea>
+
+        <div class="meta">
+          <div class="counts">
+            <div><strong id="chars">0</strong> chars</div>
+            <div><strong id="words">0</strong> words</div>
+            <div><strong id="lines">1</strong> lines</div>
+          </div>
+
+          <div class="ring-wrap" title="Progress toward max">
+            <svg class="ring" viewBox="0 0 36 36" aria-hidden="true">
+              <path class="ring-bg" d="M18 2.0845a15.9155 15.9155 0 1 1 0 31.831 15.9155 15.9155 0 1 1 0-31.831"/>
+              <path id="ringArc" class="ring-fg" d="M18 2.0845a15.9155 15.9155 0 1 1 0 31.831 15.9155 15.9155 0 1 1 0-31.831" stroke-dasharray="0 100"/>
+            </svg>
+            <div class="remaining"><span id="remaining">280</span></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="help">
+        <small>Tip: change max length above. Red when over limit. Uses UTF‑16 aware counting for emoji handling.</small>
+      </footer>
+    </section>
+
+    <footer class="credits">
+      Built with ❤️ by dev rio • Open and tweak the files
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
