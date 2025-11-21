@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  transition: background 0.5s, color 0.5s;
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.controls button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.controls button:hover {
+  background: #eaeaea;
+}
+
+.container {
+  width: 90%;
+  max-width: 450px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.title, #quote, #author {
+  color: #fff;
+}
+
+.quote-box {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+}
+
+button#btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  background: #ffffff;
+  color: #333;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button#btn:hover {
+  background: #f1f1f1;
+}
+
+/* ----- DARK MODE ----- */
+.dark {
+  background-color: #1a1a1a;
+  color: white !important;
+}
+
+.dark .container {
+  background: rgba(0,0,0,0.3);
+  color: white;
+}
+
+.dark .quote-box {
+  background: rgba(0,0,0,0.4);
+}
+
+.dark button {
+  background: #333;
+  color: #fff;
+}
+
+.dark button:hover {
+  background: #444;
+}
