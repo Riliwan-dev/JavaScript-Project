@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Enhanced Password Generator — Vanilla</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="header">
+    <h1>Enhanced Password Generator</h1>
+    <div class="controls">
+      <select id="themeSelect" aria-label="Theme chooser">
+        <option value="default">Default</option>
+        <option value="midnight">Midnight</option>
+        <option value="sunrise">Sunrise</option>
+        <option value="forest">Forest</option>
+        <option value="mono">Monochrome</option>
+      </select>
+      <button id="toggleTheme" title="Toggle Dark">🌙</button>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="output">
+      <input id="password" readonly aria-live="polite" placeholder="Click Generate" />
+      <div class="actions">
+        <button id="copy">Copy</button>
+        <button id="download">Save</button>
+      </div>
+    </div>
+
+    <div class="settings">
+      <div class="row">
+        <label>Length: <span id="lenLabel">16</span></label>
+        <input id="length" type="range" min="6" max="64" value="16">
+      </div>
+
+      <div class="grid">
+        <label><input type="checkbox" id="lower" checked> lowercase</label>
+        <label><input type="checkbox" id="upper" checked> UPPERCASE</label>
+        <label><input type="checkbox" id="numbers" checked> numbers</label>
+        <label><input type="checkbox" id="symbols" checked> symbols</label>
+        <label><input type="checkbox" id="avoidSimilar"> avoid similar (i, l, 1, O, 0)</label>
+        <label><input type="checkbox" id="pronounceable"> pronounceable (soft)</label>
+      </div>
+
+      <div class="row actions-bottom">
+        <button id="generate" class="primary">Generate</button>
+        <div class="extra">
+          <button id="clearHistory">Clear History</button>
+          <label><input id="soundToggle" type="checkbox" checked> Sound</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="history">
+      <h3>History</h3>
+      <ul id="historyList" aria-live="polite"></ul>
+    </div>
+  </section>
+
+  <footer class="footer">Made with ⚡ — Themes · Sound · History · React flavor included</footer>
+</main>
+
+<audio id="sfxGen"><source src="sfx/generate.mp3" type="audio/mpeg"></audio>
+<audio id="sfxCopy"><source src="sfx/copy.mp3" type="audio/mpeg"></audio>
+
+<script src="script.js" defer></script>
+</body>
+</html>
