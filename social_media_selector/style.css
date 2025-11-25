@@ -1,0 +1,46 @@
+body{
+  font-family: Arial;
+  background:#111;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.menu-container{
+  background:#222;
+  padding:20px;
+  border-radius:10px;
+  position:relative;
+  width:260px;
+  cursor:pointer;
+}
+.selected{
+  font-size:18px;
+}
+.menu-icon{
+  position:absolute;
+  right:20px;
+  top:22px;
+  transition:0.3s;
+}
+.menu{
+  list-style:none;
+  padding:0;
+  margin-top:10px;
+  background:#333;
+  border-radius:8px;
+  display:none;
+  overflow:hidden;
+}
+.menu li{
+  padding:12px;
+  border-bottom:1px solid #444;
+  transition:0.3s;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.menu li:hover{
+  background:#555;
+}
