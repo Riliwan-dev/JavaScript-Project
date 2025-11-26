@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass Morphic Step Progress Bar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Step Progress Bar</h2>
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+      <div class="step" data-step="1"><span class="icon">✖</span></div>
+      <div class="step" data-step="2"><span class="icon">✖</span></div>
+      <div class="step" data-step="3"><span class="icon">✖</span></div>
+      <div class="step" data-step="4"><span class="icon">✖</span></div>
+      <div class="step" data-step="5"><span class="icon">✖</span></div>
+    </div>
+    <div class="buttons">
+      <button id="prev" disabled>Previous</button>
+      <button id="next">Next</button>
+    </div>
+    <p>Current Step: <span id="currentStep">0</span> / 5</p>
+  </div>
+<script src="script.js"></script>
+</body>
+</html>
