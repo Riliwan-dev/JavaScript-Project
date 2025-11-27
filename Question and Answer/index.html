@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q&A Accordion — Glassmorphism + Dark Mode</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>Frequently Asked Questions</h1>
+      <div class="controls">
+        <button id="darkToggle" aria-pressed="false" title="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button id="addQ">+ Add Question</button>
+      </div>
+    </header>
+
+    <main class="container" id="faqContainer" aria-live="polite">
+      <!-- FAQ items inserted here -->
+      <article class="faq" data-id="1">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>What is JavaScript?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>JavaScript is a programming language used to create interactive behavior on websites — everything from sliders to dynamic forms.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="2">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>What is HTML?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>HTML (HyperText Markup Language) structures web content with elements like headings, paragraphs, links and images.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="3">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>What is CSS?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>CSS (Cascading Style Sheets) styles web pages — controlling layout, colors, spacing and responsive behavior.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="4">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>How does glassmorphism work?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>Glassmorphism is a UI style that uses translucent surfaces, backdrop blur and soft shadows to mimic frosted glass.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="5">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>Why is accessibility important?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>Accessibility ensures people with disabilities can use your site — improving reach, SEO and user satisfaction.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="6">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>How to optimize FAQ content for SEO?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>Use clear question headings, concise answers, structured data (FAQ schema) and relevant keywords to improve search visibility.</p>
+        </div>
+      </article>
+
+      <article class="faq" data-id="7">
+        <div class="question" tabindex="0" role="button" aria-expanded="false">
+          <h3>Can I have multiple open answers?</h3>
+          <i class="fa-solid fa-plus icon" aria-hidden="true"></i>
+        </div>
+        <div class="answer" hidden>
+          <p>Yes — this implementation closes others by default, but you can toggle that behavior in the script to allow multiple open items.</p>
+        </div>
+      </article>
+
+    </main>
+
+    <footer class="footer">
+      <small>Q&amp;A Accordion — Glassmorphism • Built with HTML, CSS &amp; JavaScript</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

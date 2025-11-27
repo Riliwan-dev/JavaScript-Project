@@ -1,0 +1,183 @@
+:root{
+  --bg1: linear-gradient(135deg,#0f172a,#0b1220 60%);
+  --glass-bg: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.12);
+  --accent: rgba(120, 95, 255, 0.9);
+  --accent2: rgba(0, 200, 255, 0.9);
+  --text: #e6eef8;
+  --muted: rgba(230,238,248,0.7);
+  --card-shadow: 0 8px 24px rgba(2,6,23,0.6);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg1);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+}
+
+/* page wrapper */
+.page{
+  width:100%;
+  max-width:900px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+/* header with controls */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.header h1{
+  font-size:1.4rem;
+  margin:0;
+  letter-spacing:0.2px;
+}
+
+.controls{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+/* glass card container for FAQs */
+.container{
+  backdrop-filter: blur(10px) saturate(130%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-radius:16px;
+  border:1px solid var(--glass-border);
+  padding:18px;
+  box-shadow: var(--card-shadow);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* individual faq item */
+.faq{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:12px;
+  padding:14px;
+  border:1px solid rgba(255,255,255,0.03);
+  transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s, border-color .22s;
+  box-shadow: 0 4px 14px rgba(2,6,23,0.45);
+  overflow:hidden;
+}
+
+.faq:hover{ transform: translateY(-4px); border-color: rgba(255,255,255,0.06) }
+
+/* question row */
+.question{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  cursor:pointer;
+}
+
+.question h3{
+  font-size:1rem;
+  margin:0;
+  color:var(--text);
+  font-weight:600;
+}
+
+/* icon */
+.icon{
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  font-size:0.95rem;
+  transition: all .45s cubic-bezier(.22,.9,.2,1);
+  color:var(--muted);
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+}
+
+/* answer */
+.answer{
+  margin-top:12px;
+  color:var(--muted);
+  line-height:1.6;
+  font-size:0.95rem;
+  max-height:0;
+  overflow:hidden;
+  transition: max-height .45s cubic-bezier(.2,.9,.2,1), opacity .35s;
+  opacity:0;
+}
+
+/* active state */
+.faq.active{
+  border:1px solid rgba(120,95,255,0.25);
+  box-shadow: 0 10px 34px rgba(120,95,255,0.06), 0 6px 20px rgba(0,200,255,0.04);
+}
+
+.faq.active .icon{
+  background: linear-gradient(135deg, rgba(120,95,255,0.14), rgba(0,200,255,0.12));
+  color: white;
+  transform: rotate(360deg) scale(1.06);
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 24px rgba(120,95,255,0.12);
+}
+
+/* show the answer when active */
+.faq.active .answer{
+  max-height:480px;
+  opacity:1;
+}
+
+/* footer */
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:0.85rem;
+}
+
+/* header buttons */
+.controls button{
+  background: rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.04);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:transform .18s, background .18s;
+}
+
+.controls #darkToggle{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:1.02rem; }
+.controls button:hover{ transform:translateY(-3px); background: rgba(255,255,255,0.04) }
+
+/* responsive */
+@media (max-width:600px){
+  .page{ padding:10px }
+  .container{ padding:12px }
+  .icon{ width:36px; height:36px }
+}
+
+/* dark mode overrides */
+body.dark{
+  --bg1: linear-gradient(135deg,#05060a,#071026 60%);
+  --glass-bg: rgba(0,0,0,0.25);
+  --glass-border: rgba(255,255,255,0.04);
+  --accent: rgba(120, 95, 255, 0.95);
+  --accent2: rgba(0, 200, 255, 0.95);
+  --text: #e6eef8;
+  --muted: rgba(230,238,248,0.72);
+}
