@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: 0.3s ease-in-out;
+}
+
+:root {
+  --bg: #eef1f7;
+  --text: #222;
+  --card: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.35);
+  --shadow: rgba(0, 0, 0, 0.15);
+}
+
+.dark {
+  --bg: #0c0c0c;
+  --text: #fff;
+  --card: #121212;
+  --glass-bg: rgba(0, 0, 0, 0.35);
+  --shadow: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-container {
+  text-align: right;
+  padding: 20px;
+}
+
+#toggleDark {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 40px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  width: 220px;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: transform .3s ease, box-shadow .3s ease;
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 25px var(--shadow);
+}
+
+.stat-card i {
+  font-size: 45px;
+  margin-bottom: 12px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.stat-card h2 {
+  font-size: 36px;
+  margin: 10px 0;
+}
