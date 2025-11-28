@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sidebar Menu Project</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Hamburger Icon -->
+  <div class="hamburger" id="openMenu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <!-- Logo (SVG) -->
+      <svg width="45" height="45" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#4c6ef5"/>
+        <text x="50" y="58" font-size="40" text-anchor="middle" fill="white">S</text>
+      </svg>
+
+      <!-- Close Button -->
+      <i class="fas fa-times close-btn" id="closeMenu"></i>
+    </div>
+
+    <ul class="menu">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Tutorials</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </aside>
+
+  <div class="content">
+    <h1>Sidebar Menu Project</h1>
+    <p>Click the hamburger icon to open the sidebar.</p>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>

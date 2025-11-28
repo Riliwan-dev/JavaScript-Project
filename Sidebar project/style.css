@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins, sans-serif;
+}
+
+/* Background */
+body {
+  background: #f5f7fa;
+}
+
+/* Hamburger Button */
+.hamburger {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hamburger span {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background: #333;
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100%;
+  background: white;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+  transition: 0.4s ease;
+  padding: 20px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.menu {
+  list-style: none;
+  margin-top: 40px;
+}
+
+.menu li {
+  margin: 20px 0;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 20px;
+  position: relative;
+  transition: 0.3s;
+}
+
+/* Hover underline effect */
+.menu li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background: #4c6ef5;
+  transition: 0.3s;
+}
+
+.menu li a:hover::after {
+  width: 100%;
+}
+
+/* Show sidebar */
+.sidebar.show {
+  right: 0;
+}
+
+/* Body content */
+.content {
+  padding: 80px 20px;
+}
