@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900">
+  <rect width="100%" height="100%" fill="#072f16"/>
+  <g fill="#ffd166" opacity="0.12"><circle cx="200" cy="120" r="160"/><circle cx="1000" cy="220" r="140"/></g>
+  <text x="50%" y="84%" fill="#fff" font-size="48" font-family="sans-serif" text-anchor="middle">Golden Forest</text>
+</svg>

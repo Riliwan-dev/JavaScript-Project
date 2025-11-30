@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modern Photo Gallery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Modern Photo Gallery</h1>
+    <div class="controls">
+      <input id="search" aria-label="Search images" placeholder="Search by title or tag…" />
+      <select id="filter">
+        <option value="all">All tags</option>
+        <option value="nature">Nature</option>
+        <option value="urban">Urban</option>
+        <option value="abstract">Abstract</option>
+        <option value="people">People</option>
+      </select>
+      <button id="shuffle" title="Shuffle images">Shuffle</button>
+      <label class="toggle">
+        <input id="autoplay" type="checkbox">
+        <span>Autoplay</span>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section id="gallery" class="masonry" aria-live="polite"></section>
+  </main>
+
+  <!-- Lightbox / Modal -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Image viewer">
+    <button id="close" class="close" aria-label="Close">&times;</button>
+    <button id="prev" class="nav" aria-label="Previous image">&#10094;</button>
+    <div class="lightbox-body">
+      <img id="lightbox-img" alt="Full view" />
+      <div class="meta">
+        <h2 id="lb-title"></h2>
+        <p id="lb-tags"></p>
+        <div class="actions">
+          <button id="download">Download</button>
+          <button id="fullscreen">Fullscreen</button>
+        </div>
+      </div>
+    </div>
+    <button id="next" class="nav" aria-label="Next image">&#10095;</button>
+  </div>
+
+  <footer>
+    <small>Features: responsive masonry grid, lazy-loading, keyboard navigation, autoplay slideshow, search & filter.</small>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

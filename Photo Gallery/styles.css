@@ -1,0 +1,110 @@
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#7c5cff;
+  --muted:#9aa4b2;
+  --glass: rgba(255,255,255,0.04);
+  --gap:14px;
+  --radius:12px;
+  --txt:#e6eef8;
+  font-size:16px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #061122 0%, #071831 50%, #0b1220 100%);
+  color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  min-height:100vh;
+}
+
+/* Header */
+.site-header{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.site-header h1{margin:0;font-size:1.25rem;letter-spacing:0.3px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.controls input, .controls select{
+  background:var(--glass);
+  color:var(--txt);
+  border:1px solid rgba(255,255,255,0.04);
+  padding:10px 12px;border-radius:10px;min-width:160px;
+}
+.controls button{padding:8px 12px;border-radius:10px;border:none;background:var(--accent);color:white;cursor:pointer}
+
+/* Masonry gallery using CSS columns for natural masonry feel */
+.masonry{
+  column-width:280px;
+  column-gap:var(--gap);
+  width:100%;
+  max-width:1200px;
+  margin:auto;
+  padding-top:8px;
+}
+
+.card{
+  break-inside:avoid;
+  margin-bottom:var(--gap);
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(2,6,23,0.6);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s;
+  position:relative;
+  border:1px solid rgba(255,255,255,0.03);
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(2,6,23,0.75)}
+.card img{width:100%;display:block;height:auto;vertical-align:middle}
+.card .info{padding:10px 12px;font-size:0.95rem}
+.tag{display:inline-block;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:999px;margin-right:6px;font-size:0.8rem;color:var(--muted)}
+
+/* Lightbox */
+.lightbox{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(2,6,23,0.75);backdrop-filter: blur(6px);opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.lightbox[aria-hidden="false"]{opacity:1;pointer-events:auto}
+.lightbox-body{display:flex;gap:18px;align-items:center;max-width:90%;max-height:85%;width:100%}
+.lightbox img{max-width:65vw;max-height:70vh;object-fit:contain;border-radius:10px}
+.meta{max-width:32vw;min-width:220px;color:var(--muted)}
+.meta h2{margin:0 0 6px 0;color:var(--txt)}
+.meta p{margin:0 0 12px 0}
+.actions{display:flex;gap:8px}
+.actions button{padding:8px 10px;border-radius:8px;border:none;background:var(--glass);color:var(--txt);cursor:pointer}
+
+/* Nav buttons */
+.nav{position:fixed;top:50%;transform:translateY(-50%);background:transparent;border:none;font-size:36px;color:var(--txt);cursor:pointer;opacity:0.8}
+#prev{left:12px}#next{right:12px}
+.close{position:fixed;right:16px;top:16px;font-size:30px;border:none;background:transparent;color:var(--txt);cursor:pointer}
+
+/* small screens */
+@media (max-width:700px){
+  .meta{display:none}
+  .lightbox img{max-width:90vw}
+  .nav{font-size:28px}
+}
+
+/* subtle image overlay */
+.card .overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(2,6,23,0.4));opacity:0;transition:opacity .2s}
+.card:hover .overlay{opacity:1}
+
+/* nice focus styles */
+.card:focus-within{outline:3px solid rgba(124,92,255,0.2)}
+
+/* footer */
+footer{opacity:0.6;text-align:center;margin-top:6px;font-size:0.9rem}
+
+/* small util */
+.hidden{display:none}

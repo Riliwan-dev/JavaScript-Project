@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+  <defs><linearGradient id="sun" x1="0" x2="1"><stop offset="0" stop-color="#ffb703"/><stop offset="1" stop-color="#fb8500"/></linearGradient></defs>
+  <rect width="100%" height="100%" fill="#023047"/>
+  <circle cx="950" cy="200" r="120" fill="url(#sun)"/>
+  <text x="50%" y="92%" fill="#fff" font-size="42" font-family="sans-serif" text-anchor="middle">Sunset Sea</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+  <rect width="100%" height="100%" fill="#0b1220"/>
+  <g stroke="#7c5cff" stroke-width="18" stroke-linecap="round">
+    <path d="M100 100 L400 700"/>
+    <path d="M300 100 L600 700"/>
+    <path d="M500 100 L900 700"/>
+  </g>
+  <text x="50%" y="92%" fill="#fff" font-size="38" font-family="sans-serif" text-anchor="middle">Concrete Lines</text>
+</svg>
