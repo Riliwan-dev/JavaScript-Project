@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  padding: 30px;
+  color: white;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#addNoteBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  color: white;
+  font-size: 18px;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: block;
+  margin: auto;
+  transition: 0.3s;
+}
+
+#addNoteBtn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+#notesContainer {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.note {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 15px;
+  border-radius: 12px;
+  min-height: 150px;
+  color: white;
+  backdrop-filter: blur(12px);
+  outline: none;
+  transition: 0.3s;
+}
+
+.note:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
