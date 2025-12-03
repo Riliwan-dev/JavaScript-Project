@@ -28,13 +28,20 @@
         box-shadow: 0 15px 40px rgba(0,0,0,0.3);
     }
     .slides {
-        display: flex;
-        transition: transform 0.8s ease-in-out;
+        position: relative;
     }
-    .slides img {
+    .slides img, .slides svg {
         width: 100%;
+        display: none;
         border-radius: 15px;
-        flex-shrink: 0;
+    }
+    .slides img.active, .slides svg.active {
+        display: block;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
     }
     .nav-btn {
         position: absolute;
@@ -58,30 +65,28 @@
     .next {
         right: 15px;
     }
-    /* Fade-in effect for images */
-    .slides img {
-        opacity: 0;
-        transition: opacity 0.8s ease-in-out;
-    }
-    .slides img.active {
-        opacity: 1;
-    }
 </style>
 </head>
 <body>
 
 <div class="slider">
     <div class="slides">
-        <img src="/mnt/data/bc537a1c-3087-41b7-aff8-179793bcedcc.png" class="active" alt="Slide 1">
-        <img src="https://via.placeholder.com/800x500?text=Slide+2" alt="Slide 2">
-        <img src="https://via.placeholder.com/800x500?text=Slide+3" alt="Slide 3">
+        <!-- Slide 1: SVG -->
+        <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+            <rect width="800" height="500" fill="#FF6F61"/>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="48" fill="#fff">Slide 1 SVG</text>
+        </svg>
+        <!-- Slide 2: Placeholder Image -->
+        <img src="https://via.placeholder.com/800x500/4CAF50/ffffff?text=Slide+2" alt="Slide 2">
+        <!-- Slide 3: Placeholder Image -->
+        <img src="https://via.placeholder.com/800x500/2196F3/ffffff?text=Slide+3" alt="Slide 3">
     </div>
     <button class="nav-btn prev"><i class="fas fa-chevron-left"></i></button>
     <button class="nav-btn next"><i class="fas fa-chevron-right"></i></button>
 </div>
 
 <script>
-    const slides = document.querySelectorAll('.slides img');
+    const slides = document.querySelectorAll('.slides img, .slides svg');
     const prevBtn = document.querySelector('.prev');
     const nextBtn = document.querySelector('.next');
     let currentIndex = 0;
