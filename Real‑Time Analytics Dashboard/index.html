@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High‑Performance Data Visualization Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121833;
+      --text: #e6e8ff;
+      --muted: #9aa2ff;
+      --accent: #6cf2c2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2150 0%, transparent 40%), var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 16px 20px; display: flex; align-items: center; gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      position: sticky; top: 0; backdrop-filter: blur(6px); background: rgba(11,16,32,.6);
+    }
+    header h1 { font-size: 18px; margin: 0; letter-spacing: .3px; }
+    header .controls { margin-left: auto; display: flex; gap: 8px; }
+    button, select {
+      background: var(--card); color: var(--text); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px; padding: 8px 12px; cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); }
+    main {
+      padding: 16px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)), var(--card);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .card h2 { font-size: 14px; margin: 4px 4px 8px; color: var(--muted); }
+    canvas { width: 100%; height: 260px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stat { padding: 12px; border-radius: 12px; background: rgba(255,255,255,.04); }
+    .stat .v { font-size: 22px; font-weight: 700; }
+    .stat .l { color: var(--muted); font-size: 12px; }
+    footer { padding: 12px 16px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 900px) {
+      .span-6, .span-8, .span-4 { grid-column: span 12; }
+      canvas { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Real‑Time Analytics Dashboard</h1>
+    <div class="controls">
+      <select id="speed">
+        <option value="1">1×</option>
+        <option value="2">2×</option>
+        <option value="4">4×</option>
+      </select>
+      <button id="toggle">Pause</button>
+      <button id="reset">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card span-12">
+      <div class="stats">
+        <div class="stat"><div class="v" id="s1">0</div><div class="l">Throughput</div></div>
+        <div class="stat"><div class="v" id="s2">0</div><div class="l">Latency (ms)</div></div>
+        <div class="stat"><div class="v" id="s3">0</div><div class="l">Errors</div></div>
+        <div class="stat"><div class="v" id="s4">0%</div><div class="l">Uptime</div></div>
+      </div>
+    </section>
+
+    <section class="card span-6">
+      <h2>Time Series (Canvas, 60 FPS)</h2>
+      <canvas id="line"></canvas>
+    </section>
+
+    <section class="card span-6">
+      <h2>Distribution (Histogram)</h2>
+      <canvas id="hist"></canvas>
+    </section>
+
+    <section class="card span-12">
+      <h2>Scatter (Virtualized Rendering)</h2>
+      <canvas id="scatter"></canvas>
+    </section>
+  </main>
+
+  <footer>Pure HTML + JavaScript • Canvas‑based rendering for high performance</footer>
+
+  <script>
+    // --------- Utilities ---------
+    const DPR = window.devicePixelRatio || 1;
+    function fitCanvas(c) {
+      const r = c.getBoundingClientRect();
+      c.width = Math.floor(r.width * DPR);
+      c.height = Math.floor(r.height * DPR);
+      const g = c.getContext('2d');
+      g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      return g;
+    }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    // --------- State ---------
+    let running = true;
+    let speed = 1;
+    let t = 0;
+    const N = 600; // points for time series
+    const series = Array.from({ length: N }, (_, i) => Math.sin(i * 0.04));
+    const scatterPts = Array.from({ length: 20000 }, () => ({ x: Math.random(), y: Math.random() }));
+
+    // --------- Canvases ---------
+    const lineC = document.getElementById('line');
+    const histC = document.getElementById('hist');
+    const scatC = document.getElementById('scatter');
+    let lineG, histG, scatG;
+
+    function resize() {
+      lineG = fitCanvas(lineC);
+      histG = fitCanvas(histC);
+      scatG = fitCanvas(scatC);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // --------- Drawers ---------
+    function drawLine(g) {
+      const w = lineC.clientWidth, h = lineC.clientHeight;
+      g.clearRect(0, 0, w, h);
+      g.strokeStyle = '#6cf2c2'; g.lineWidth = 2;
+      g.beginPath();
+      for (let i = 0; i < series.length; i++) {
+        const x = (i / (series.length - 1)) * w;
+        const y = h * (0.5 - 0.45 * series[i]);
+        i ? g.lineTo(x, y) : g.moveTo(x, y);
+      }
+      g.stroke();
+    }
+
+    function drawHist(g) {
+      const w = histC.clientWidth, h = histC.clientHeight;
+      g.clearRect(0, 0, w, h);
+      const bins = 24;
+      const hist = new Array(bins).fill(0);
+      for (const v of series) {
+        const b = clamp(Math.floor((v + 1) / 2 * bins), 0, bins - 1);
+        hist[b]++;
+      }
+      const max = Math.max(...hist);
+      const bw = w / bins;
+      g.fillStyle = '#9aa2ff';
+      for (let i = 0; i < bins; i++) {
+        const bh = (hist[i] / max) * (h - 20);
+        g.fillRect(i * bw + 2, h - bh, bw - 4, bh);
+      }
+    }
+
+    function drawScatter(g) {
+      const w = scatC.clientWidth, h = scatC.clientHeight;
+      g.clearRect(0, 0, w, h);
+      g.fillStyle = 'rgba(108,242,194,.35)';
+      // Virtualized: sample subset based on width
+      const step = Math.max(1, Math.floor(scatterPts.length / (w * 2)));
+      for (let i = 0; i < scatterPts.length; i += step) {
+        const p = scatterPts[i];
+        g.fillRect(p.x * w, p.y * h, 1, 1);
+      }
+    }
+
+    // --------- Loop ---------
+    function tick() {
+      if (running) {
+        const k = speed;
+        t += 0.04 * k;
+        series.shift();
+        series.push(Math.sin(t) + 0.2 * Math.sin(t * 3));
+      }
+      drawLine(lineG);
+      drawHist(histG);
+      drawScatter(scatG);
+      // Stats
+      document.getElementById('s1').textContent = Math.round(800 + 200 * Math.abs(Math.sin(t)));
+      document.getElementById('s2').textContent = Math.round(40 + 30 * Math.abs(Math.cos(t * .7)));
+      document.getElementById('s3').textContent = Math.round(2 + 3 * Math.abs(Math.sin(t * .3)));
+      document.getElementById('s4').textContent = (99.9 - 0.05 * Math.abs(Math.sin(t))).toFixed(2) + '%';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // --------- Controls ---------
+    document.getElementById('toggle').onclick = () => {
+      running = !running;
+      document.getElementById('toggle').textContent = running ? 'Pause' : 'Resume';
+    };
+    document.getElementById('reset').onclick = () => {
+      t = 0; for (let i = 0; i < series.length; i++) series[i] = Math.sin(i * .04);
+    };
+    document.getElementById('speed').onchange = (e) => speed = Number(e.target.value);
+  </script>
+</body>
+</html>
