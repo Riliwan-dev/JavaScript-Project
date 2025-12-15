@@ -1,11 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple E‑Commerce Platform</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    header { background: #0f172a; color: #fff; padding: 15px; display: flex; justify-content: space-between; }
+    header h1 { margin: 0; font-size: 20px; }
+    nav button { margin-left: 10px; padding: 8px 12px; cursor: pointer; }
+
+    .container { padding: 20px; }
+
+    /* Product Grid */
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .product { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .product h3 { margin: 0 0 10px; }
+    .product button { width: 100%; padding: 8px; background: #2563eb; color: #fff; border: none; border-radius: 4px; }
+
+    /* Cart */
+    .cart { background: #fff; padding: 15px; margin-top: 20px; border-radius: 8px; }
+    .cart-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+
+    /* Auth */
+    .auth { background: #fff; padding: 20px; max-width: 300px; margin: 30px auto; border-radius: 8px; }
+    .auth input { width: 100%; padding: 8px; margin-bottom: 10px; }
+
+    /* Admin */
+    .admin { background: #fff; padding: 20px; margin-top: 20px; border-radius: 8px; }
+    .admin input { padding: 6px; margin-right: 5px; }
+  </style>
 </head>
 <body>
-    
+
+<header>
+  <h1>My E‑Commerce Store</h1>
+  <nav>
+    <button onclick="showProducts()">Shop</button>
+    <button onclick="showCart()">Cart (<span id="cartCount">0</span>)</button>
+    <button onclick="logout()">Logout</button>
+  </nav>
+</header>
+
+<div id="app" class="container"></div>
+
+<script>
+/* ------------------ DATA ------------------ */
+let products = JSON.parse(localStorage.getItem('products')) || [
+  { id: 1, name: 'Laptop', price: 800 },
+  { id: 2, name: 'Headphones', price: 50 },
+  { id: 3, name: 'Smartphone', price: 500 }
+];
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let user = JSON.parse(localStorage.getItem('user')) || null;
+
+/* ------------------ AUTH ------------------ */
+function showAuth() {
+  document.getElementById('app').innerHTML = `
+    <div class="auth">
+      <h2>Login</h2>
+      <input id="username" placeholder="Username" />
+      <input id="password" type="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>`;
+}
+
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  if (!username || !password) return alert('Fill all fields');
+
+  user = { username, role: username === 'admin' ? 'admin' : 'user' };
+  localStorage.setItem('user', JSON.stringify(user));
+  showProducts();
+}
+
+function logout() {
+  localStorage.removeItem('user');
+  user = null;
+  showAuth();
+}
+
+/* ------------------ PRODUCTS ------------------ */
+function showProducts() {
+  if (!user) return showAuth();
+
+  let html = '<h2>Products</h2><div class="products">';
+  products.forEach(p => {
+    html += `
+      <div class="product">
+        <h3>${p.name}</h3>
+        <p>Price: $${p.price}</p>
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>`;
+  });
+  html += '</div>';
+
+  if (user.role === 'admin') html += adminPanel();
+
+  document.getElementById('app').innerHTML = html;
+}
+
+/* ------------------ CART ------------------ */
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  cart.push(product);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+}
+
+function showCart() {
+  if (!user) return showAuth();
+
+  let total = 0;
+  let html = '<h2>Your Cart</h2><div class="cart">';
+  cart.forEach((item, index) => {
+    total += item.price;
+    html += `<div class="cart-item">${item.name} - $${item.price}
+      <button onclick="removeFromCart(${index})">X</button>
+    </div>`;
+  });
+  html += `<strong>Total: $${total}</strong><br/><br/>
+           <button onclick="checkout()">Checkout</button>`;
+  html += '</div>';
+
+  document.getElementById('app').innerHTML = html;
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  showCart();
+  updateCartCount();
+}
+
+function checkout() {
+  alert('Order placed successfully!');
+  cart = [];
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  showProducts();
+}
+
+function updateCartCount() {
+  document.getElementById('cartCount').innerText = cart.length;
+}
+
+/* ------------------ ADMIN ------------------ */
+function adminPanel() {
+  return `
+    <div class="admin">
+      <h3>Admin Dashboard</h3>
+      <input id="pname" placeholder="Product Name" />
+      <input id="pprice" type="number" placeholder="Price" />
+      <button onclick="addProduct()">Add Product</button>
+    </div>`;
+}
+
+function addProduct() {
+  const name = document.getElementById('pname').value;
+  const price = document.getElementById('pprice').value;
+
+  if (!name || !price) return alert('Enter product details');
+
+  products.push({ id: Date.now(), name, price: Number(price) });
+  localStorage.setItem('products', JSON.stringify(products));
+  showProducts();
+}
+
+/* ------------------ INIT ------------------ */
+updateCartCount();
+user ? showProducts() : showAuth();
+</script>
 </body>
 </html>
