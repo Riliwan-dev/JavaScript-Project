@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glassmorphism Kanban Dashboard</title>
+  <style>
+    /* ===== GLOBAL RESET ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1d2671, #c33764);
+      color: #fff;
+      padding: 20px;
+    }
+
+    /* ===== GLASS EFFECT ===== */
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    header h1 { font-size: 1.8rem; }
+
+    header button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      padding: 20px;
+    }
+
+    .sidebar h3 { margin-bottom: 15px; }
+
+    .stats {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ===== KANBAN BOARD ===== */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .column {
+      padding: 15px;
+      min-height: 400px;
+    }
+
+    .column h2 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .task {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.2);
+      cursor: grab;
+    }
+
+    .task:active { cursor: grabbing; }
+
+    .add-task {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* ===== ACTIVITY LOG (EXTRA FEATURE) ===== */
+    .activity {
+      margin-top: 20px;
+      padding: 15px;
+    }
+
+    .activity ul {
+      list-style: none;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .activity li { margin-bottom: 6px; }
+
+    @media (max-width: 900px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .board { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="glass">
+    <h1>Kanban Task Dashboard</h1>
+    <button onclick="resetBoard()">Reset Board</button>
+  </header>
+
+  <section class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar glass">
+      <h3>Overview</h3>
+      <div class="stats">
+        <div class="stat">Total Tasks: <span id="totalTasks">0</span></div>
+        <div class="stat">Completed: <span id="doneTasks">0</span></div>
+      </div>
+
+      <div class="activity glass">
+        <h3>Activity Log</h3>
+        <ul id="activityLog"></ul>
+      </div>
+    </aside>
+
+    <!-- KANBAN BOARD -->
+    <main class="board">
+
+      <div class="column glass" data-status="todo">
+        <h2>To Do</h2>
+        <div class="tasks"></div>
+        <button class="add-task" onclick="addTask('todo')">+ Add Task</button>
+      </div>
+
+      <div class="column glass" data-status="progress">
+        <h2>In Progress</h2>
+        <div class="tasks"></div>
+        <button class="add-task" onclick="addTask('progress')">+ Add Task</button>
+      </div>
+
+      <div class="column glass" data-status="done">
+        <h2>Done</h2>
+        <div class="tasks"></div>
+        <button class="add-task" onclick="addTask('done')">+ Add Task</button>
+      </div>
+
+    </main>
+  </section>
+
+  <script>
+    /* ===== DATA PERSISTENCE (LocalStorage) ===== */
+    let boardData = JSON.parse(localStorage.getItem('kanbanBoard')) || {
+      todo: [], progress: [], done: [], log: []
+    };
+
+    function save() {
+      localStorage.setItem('kanbanBoard', JSON.stringify(boardData));
+      updateStats();
+    }
+
+    /* ===== TASK MANAGEMENT ===== */
+    function addTask(status) {
+      const text = prompt('Enter task description');
+      if (!text) return;
+      boardData[status].push(text);
+      log(`Added task to ${status}`);
+      save();
+      render();
+    }
+
+    function log(message) {
+      boardData.log.unshift(`${new Date().toLocaleTimeString()} - ${message}`);
+      boardData.log = boardData.log.slice(0, 6);
+    }
+
+    /* ===== DRAG & DROP ===== */
+    function makeDraggable(task, status, index) {
+      task.draggable = true;
+
+      task.addEventListener('dragstart', () => {
+        task.dataset.from = status;
+        task.dataset.index = index;
+      });
+    }
+
+    document.querySelectorAll('.column').forEach(col => {
+      col.addEventListener('dragover', e => e.preventDefault());
+      col.addEventListener('drop', e => {
+        const from = e.dataTransfer?.getData('from') || e.target.closest('.column')?.dataset.from;
+      });
+    });
+
+    document.addEventListener('drop', e => {
+      const task = document.querySelector('[draggable=true]');
+      const column = e.target.closest('.column');
+      if (!task || !column) return;
+
+      const from = task.dataset.from;
+      const index = task.dataset.index;
+      const to = column.dataset.status;
+
+      const moved = boardData[from].splice(index, 1)[0];
+      boardData[to].push(moved);
+      log(`Moved task to ${to}`);
+      save();
+      render();
+    });
+
+    /* ===== RENDER ===== */
+    function render() {
+      document.querySelectorAll('.column').forEach(col => {
+        const status = col.dataset.status;
+        const container = col.querySelector('.tasks');
+        container.innerHTML = '';
+        boardData[status].forEach((text, i) => {
+          const div = document.createElement('div');
+          div.className = 'task glass';
+          div.textContent = text;
+          makeDraggable(div, status, i);
+          container.appendChild(div);
+        });
+      });
+
+      const logEl = document.getElementById('activityLog');
+      logEl.innerHTML = boardData.log.map(l => `<li>${l}</li>`).join('');
+
+      updateStats();
+    }
+
+    function updateStats() {
+      const total = boardData.todo.length + boardData.progress.length + boardData.done.length;
+      document.getElementById('totalTasks').textContent = total;
+      document.getElementById('doneTasks').textContent = boardData.done.length;
+    }
+
+    function resetBoard() {
+      if (!confirm('Clear all tasks?')) return;
+      boardData = { todo: [], progress: [], done: [], log: [] };
+      save();
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
