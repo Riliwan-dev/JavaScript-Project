@@ -1,0 +1,1 @@
+/* Placeholder for mode/htmlmixed/htmlmixed.js - download actual CodeMirror file */

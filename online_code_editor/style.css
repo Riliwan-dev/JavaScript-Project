@@ -1,0 +1,15 @@
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+body { height: 100vh; display:flex; justify-content:center; align-items:center;
+       background: linear-gradient(135deg, #74ebd5, #acb6e5); transition: background 0.5s ease; }
+.editor-container { backdrop-filter: blur(15px); background: rgba(255,255,255,0.1);
+                    border-radius:20px; padding:20px; width:90%; max-width:1200px;
+                    box-shadow:0 8px 32px rgba(0,0,0,0.25); }
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.header h1 { font-size:1.5rem; color:#fff; text-shadow:1px 1px 2px rgba(0,0,0,0.5); }
+.header button { padding:8px 12px; margin-left:10px; border:none; border-radius:8px;
+                 cursor:pointer; font-weight:bold; transition:0.3s; backdrop-filter: blur(10px);
+                 background: rgba(255,255,255,0.2); color:#fff; }
+.header button:hover { background: rgba(255,255,255,0.35); }
+.editor-wrapper { display:flex; gap:20px; height:70vh; }
+.CodeMirror { width:50%; height:100%; border-radius:15px; font-size:1rem; }
+#output { width:50%; height:100%; border-radius:15px; border:none; background: rgba(255,255,255,0.2); }

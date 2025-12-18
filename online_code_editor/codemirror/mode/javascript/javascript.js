@@ -1,0 +1,1 @@
+/* Placeholder for mode/javascript/javascript.js - download actual CodeMirror file */
